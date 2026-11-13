@@ -8,6 +8,10 @@ import carImg from '../assets/hero-car.jpg'
 
 const NAV = [['recursos', 'Recursos'], ['fluxo', 'Como funciona'], ['planos', 'Planos'], ['duvidas', 'Dúvidas']]
 
+// Endereço do sistema (SaaS), que vive em outro projeto. Sem a variável, os botões levam à demonstração.
+const SISTEMA = (import.meta.env.VITE_SISTEMA_URL || '').replace(/\/$/, '')
+const irDemo = (e) => { e.preventDefault(); goTo('demo') }
+
 const WHATSAPP = '5514997567621' // DDD 14
 const ZAP = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent('gostei do site da liberty mec')}`
 
@@ -20,10 +24,14 @@ export function Header() {
         <a href="#topo" className="hdr__logo" aria-label="Liberty Mec — início" onClick={go('topo')}><Logo light /></a>
         <nav className={`hdr__nav ${open ? 'is-open' : ''}`} aria-label="Principal">
           <div className="hdr__links">{NAV.map(([id, l]) => <a key={id} href={`#${id}`} onClick={go(id)}>{l}</a>)}</div>
-          <div className="hdr__actions">
-            <a href="/entrar" className="hdr__login">Entrar</a>
-            <a href="/cadastrar" className="btn btn--white hdr__cta">Começar grátis</a>
-          </div>
+          {SISTEMA ? (
+            <div className="hdr__actions">
+              <a href={`${SISTEMA}/entrar`} className="hdr__login">Entrar</a>
+              <a href={`${SISTEMA}/cadastrar`} className="btn btn--white hdr__cta">Começar grátis</a>
+            </div>
+          ) : (
+            <a href="#demo" className="btn btn--white hdr__cta" onClick={go('demo')}>Testar a demonstração</a>
+          )}
         </nav>
         <button className="hdr__burger" aria-expanded={open} aria-label="Abrir menu" onClick={() => setOpen((o) => !o)}><i /><i /></button>
       </div>
@@ -236,14 +244,14 @@ export function Planos() {
               <h3>Essencial</h3>
               <p className="price"><b>R$ 70</b><span>/mês</span></p>
               <p className="plans__for">Para organizar a casa: OS, orçamento, agenda e caixa.</p>
-              <a href="/cadastrar" className="btn btn--ghost">Começar 7 dias grátis</a>
+              <a href={SISTEMA ? `${SISTEMA}/cadastrar` : '#demo'} className="btn btn--ghost" onClick={SISTEMA ? undefined : irDemo}>{SISTEMA ? 'Começar 7 dias grátis' : 'Testar agora'}</a>
             </div>
             <div role="columnheader" className="plans__h plans__h--pro">
               <span className="plans__flag">Mais escolhido</span>
               <h3>Completo</h3>
               <p className="price"><b>R$ 90</b><span>/mês</span></p>
               <p className="plans__for">Para quem quer saber quanto lucra: estoque, comissão e relatórios.</p>
-              <a href="/cadastrar" className="btn btn--white">Começar 7 dias grátis</a>
+              <a href={SISTEMA ? `${SISTEMA}/cadastrar` : '#demo'} className="btn btn--white" onClick={SISTEMA ? undefined : irDemo}>{SISTEMA ? 'Começar 7 dias grátis' : 'Testar agora'}</a>
             </div>
           </div>
           {TABELA.map(([grupo, linhas]) => (
@@ -303,8 +311,8 @@ export function Final() {
       <div className="wrap final__in">
         <h2 data-reveal>Veja a sua oficina funcionando antes de assinar.</h2>
         <div data-reveal className="final__cta">
-          <a href="/cadastrar" className="btn btn--white">Criar conta grátis</a>
-          <a href="#demo" className="btn btn--ghost" onClick={(e) => { e.preventDefault(); goTo('demo') }}>Ver a demonstração</a>
+          {SISTEMA && <a href={`${SISTEMA}/cadastrar`} className="btn btn--white">Criar conta grátis</a>}
+          <a href="#demo" className={`btn ${SISTEMA ? 'btn--ghost' : 'btn--white'}`} onClick={irDemo}>{SISTEMA ? 'Ver a demonstração' : 'Testar a demonstração'}</a>
           <p>7 dias grátis · sem cartão · cancele quando quiser</p>
         </div>
       </div>
@@ -322,8 +330,8 @@ export function Final() {
             <nav className="ft__col" aria-label="Começar">
               <h3>Começar</h3>
               <ul>
-                <li><a href="/cadastrar">Criar conta grátis</a></li>
-                <li><a href="/entrar">Entrar</a></li>
+                {SISTEMA && <li><a href={`${SISTEMA}/cadastrar`}>Criar conta grátis</a></li>}
+                {SISTEMA && <li><a href={`${SISTEMA}/entrar`}>Entrar</a></li>}
                 <li><a href="#demo" onClick={(e) => { e.preventDefault(); goTo('demo') }}>Testar a demonstração</a></li>
                 <li><a href="#planos" onClick={(e) => { e.preventDefault(); goTo('planos') }}>Ver planos</a></li>
                 <li><a href="#duvidas" onClick={(e) => { e.preventDefault(); goTo('duvidas') }}>7 dias grátis, sem cartão</a></li>

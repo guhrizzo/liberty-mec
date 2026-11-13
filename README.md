@@ -23,34 +23,10 @@ Gera a pasta `dist/` (site estático). Em Vercel, Netlify ou Cloudflare Pages us
 - Build command: `npm run build`
 - Output directory: `dist`
 
-## API (pasta `server/`)
+## Sistema (SaaS)
 
-Node + Express + Postgres. Login com JWT, senha com bcrypt e isolamento por oficina (toda consulta filtra por `oficina_id`).
+O sistema real (cadastro, login, ordens, orçamentos) vive em **outro projeto**, isolado desta landing:
+`liberty-mec-sistema` (front + API). Aqui fica só o site de apresentação e a demonstração com dados fictícios.
 
-```bash
-cd server
-npm install
-npm run dev     # http://localhost:3001 (sem DATABASE_URL usa um Postgres embutido em ./.data)
-npm test        # testes de ponta a ponta, incluindo isolamento entre oficinas
-```
-
-Rotas (todas, exceto `/auth/*` e `/saude`, exigem `Authorization: Bearer <token>`):
-
-| Rota | O que faz |
-| --- | --- |
-| `POST /auth/cadastro`, `POST /auth/login`, `GET /auth/eu` | Cria a oficina + dono (7 dias de teste), entra e consulta a sessão |
-| `/clientes`, `/veiculos` | Listar, criar, editar e remover |
-| `/ordens` | Listar, criar (numeração sequencial), editar, `PATCH /:id/status` |
-| `/orcamentos` | Listar, criar, `POST /:id/aprovar` (gera a OS) e `/:id/recusar` |
-
-### Deploy na Render
-
-1. Em **New + → Blueprint**, aponte para este repositório. O `render.yaml` cria a API e o Postgres.
-2. Confira `CORS_ORIGIN` (endereço do site na Vercel). `JWT_SECRET` é gerado pela Render.
-3. No site, aponte o front para a URL da API (`VITE_API_URL`).
-
-### Ligando o site à API
-
-- **Local:** rode a API (`cd server && npm run dev`, porta 3001) e o site (`npm run dev`). Em desenvolvimento o site já aponta para `http://localhost:3001`.
-- **Produção (Vercel):** defina a variável `VITE_API_URL` com o endereço da API na Render e faça um novo deploy. O `vercel.json` já cuida das rotas `/entrar`, `/cadastrar` e `/app`.
-- Telas: `/cadastrar` (teste de 7 dias), `/entrar` e `/app` (o sistema, só para quem está logado).
+Para ligar os botões "Entrar" e "Começar grátis" ao sistema, defina `VITE_SISTEMA_URL` (endereço do front do sistema)
+nas variáveis da Vercel. Sem ela, os botões levam à demonstração.

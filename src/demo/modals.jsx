@@ -58,7 +58,7 @@ export function ModalCliente() {
 export function ModalVeiculo({ clienteId }) {
   const s = useDemo()
   const [f, setF] = useState({ clienteId: clienteId || s.clientes[0]?.id, placa: '', modelo: '', ano: '', km: '', cor: '' })
-  const ok = f.placa.length >= 7 && f.modelo.trim().length > 1 && Boolean(f.clienteId)
+  const ok = f.placa.length >= 7 && f.modelo.trim().length > 1
   return (
     <FormModal title="Novo veículo" submitLabel="Cadastrar veículo" disabled={!ok}
       onSubmit={() => ok && actions.addVeiculo({ ...f, ano: Number(f.ano) || 0, km: Number(f.km) || 0 })}>
@@ -82,18 +82,8 @@ export function ModalVeiculo({ clienteId }) {
   )
 }
 
-let seqItem = 0
 function ItensEditor({ itens, setItens }) {
-  const real = useDemo().modo === 'real'
   const [sel, setSel] = useState(CATALOGO[0].id)
-  const [novo, setNovo] = useState({ tipo: 'servico', nome: '', valor: '' })
-  const valorNovo = Number(String(novo.valor).replace(',', '.'))
-  const podeAdd = novo.nome.trim().length > 0 && valorNovo >= 0 && novo.valor !== ''
-  const addAvulso = () => {
-    if (!podeAdd) return
-    setItens((l) => [...l, { id: `n${++seqItem}`, tipo: novo.tipo, nome: novo.nome.trim(), valor: valorNovo, qtd: 1 }])
-    setNovo({ ...novo, nome: '', valor: '' })
-  }
   const add = () => {
     const c = CATALOGO.find((x) => x.id === sel)
     setItens((l) => {
@@ -103,18 +93,6 @@ function ItensEditor({ itens, setItens }) {
   }
   return (
     <div className="d-itens">
-      {real ? (
-        <div className="d-itens__add d-itens__add--manual">
-          <select value={novo.tipo} onChange={(e) => setNovo({ ...novo, tipo: e.target.value })} aria-label="Tipo do item">
-            <option value="servico">Serviço</option><option value="peca">Peça</option>
-          </select>
-          <input value={novo.nome} onChange={(e) => setNovo({ ...novo, nome: e.target.value })} placeholder="Ex.: Troca de óleo" aria-label="Descrição do item"
-            onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addAvulso() } }} />
-          <input value={novo.valor} inputMode="decimal" onChange={(e) => setNovo({ ...novo, valor: e.target.value })} placeholder="Valor (R$)" aria-label="Valor do item"
-            onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addAvulso() } }} />
-          <button type="button" className="d-btn d-btn--soft" onClick={addAvulso} disabled={!podeAdd}><Plus size={16} /> Adicionar</button>
-        </div>
-      ) : (
       <div className="d-itens__add">
         <select value={sel} onChange={(e) => setSel(e.target.value)} aria-label="Serviço ou peça">
           <optgroup label="Serviços">{CATALOGO.filter((c) => c.tipo === 'servico').map((c) => <option key={c.id} value={c.id}>{c.nome} — {brl(c.valor)}</option>)}</optgroup>
@@ -122,7 +100,6 @@ function ItensEditor({ itens, setItens }) {
         </select>
         <button type="button" className="d-btn d-btn--soft" onClick={add}><Plus size={16} /> Adicionar</button>
       </div>
-      )}
       {itens.length === 0 ? <p className="d-muted">Nenhum item ainda. Adicione serviços e peças.</p> : (
         <ul className="d-itens__list">
           {itens.map((i) => (
@@ -160,7 +137,7 @@ export function ModalOS({ veiculoId }) {
   const s = useDemo()
   const [vid, setVid] = useState(veiculoId || s.veiculos[0]?.id || '')
   const [relato, setRelato] = useState('')
-  const [mecanico, setMecanico] = useState(s.modo === 'real' ? '' : 'Edson')
+  const [mecanico, setMecanico] = useState('Edson')
   const [itens, setItens] = useState([])
   return (
     <FormModal wide title="Nova ordem de serviço" submitLabel="Abrir OS" disabled={!vid}
@@ -170,9 +147,7 @@ export function ModalOS({ veiculoId }) {
         <textarea rows={2} value={relato} onChange={(e) => setRelato(e.target.value)} placeholder="Ex.: barulho ao passar em lombadas, luz do motor acesa…" />
       </Field>
       <Field label="Mecânico responsável">
-        {s.modo === 'real'
-          ? <input value={mecanico} onChange={(e) => setMecanico(e.target.value)} placeholder="Opcional" />
-          : <select value={mecanico} onChange={(e) => setMecanico(e.target.value)}><option>Edson</option><option>Wesley</option></select>}
+        <select value={mecanico} onChange={(e) => setMecanico(e.target.value)}><option>Edson</option><option>Wesley</option></select>
       </Field>
       <ItensEditor itens={itens} setItens={setItens} />
     </FormModal>
