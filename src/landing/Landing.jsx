@@ -240,7 +240,7 @@ export function Planos() {
           </div>
           {TABELA.map(([grupo, linhas]) => (
             <div role="rowgroup" key={grupo}>
-              <div className="plans__group" role="row"><span role="cell">{grupo}</span></div>
+              <div className="plans__group" role="row"><span role="cell">{grupo}</span><span className="plans__colname" role="columnheader">Essencial</span><span className="plans__colname" role="columnheader">Completo</span></div>
               {linhas.map(([nome, a, b]) => (
                 <div className="plans__row" role="row" key={nome}>
                   <div role="rowheader">{nome}</div>
