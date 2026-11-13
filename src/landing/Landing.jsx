@@ -15,7 +15,7 @@ export function Header() {
   const [open, setOpen] = useState(false)
   const go = (id) => (e) => { e.preventDefault(); setOpen(false); goTo(id) }
   return (
-    <header className="hdr">
+    <header className={`hdr ${open ? 'is-menu' : ''}`}>
       <div className="wrap hdr__in">
         <a href="#topo" className="hdr__logo" aria-label="Liberty Mec — início" onClick={go('topo')}><Logo light /></a>
         <nav className={`hdr__nav ${open ? 'is-open' : ''}`} aria-label="Principal">

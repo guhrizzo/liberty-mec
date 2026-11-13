@@ -343,3 +343,10 @@ a { color: inherit; }
   .plans__row > [role='rowheader'] { padding: 14px 8px 14px 18px; font-size: 14.5px; line-height: 1.35; }
   .plans__row > [role='cell'] { padding-inline: 4px; }
 }
+
+/* Menu aberto no celular: o aviso de planos sai de cima dos links */
+.announce { transition: opacity .25s var(--ease); }
+@media (max-width: 959px) {
+  .hdr.is-menu .announce { opacity: 0; pointer-events: none; visibility: hidden; }
+  .hdr__nav { z-index: 2; }
+}
