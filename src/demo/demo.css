@@ -127,7 +127,7 @@
 .d-empty { padding: 28px; text-align: center; color: var(--muted); }
 
 /* Drawer (painel lateral dentro do quadro) */
-.d-drawer { position: absolute; top: 0; right: 0; bottom: 0; width: min(380px, 100%); background: #fff; border-left: 1px solid var(--line); box-shadow: -18px 0 40px -24px rgba(20,18,15,.35); display: flex; flex-direction: column; z-index: 5; animation: d-slide .26s cubic-bezier(.2,.8,.2,1) both; }
+.d-drawer { position: absolute; top: 0; right: 0; bottom: 0; width: min(380px, 100%); background: #fff; border-left: 1px solid var(--line); box-shadow: -18px 0 40px -24px rgba(20,18,15,.35); display: flex; flex-direction: column; z-index: 35; animation: d-slide .26s cubic-bezier(.2,.8,.2,1) both; }
 @keyframes d-slide { from { transform: translateX(24px); opacity: 0; } to { transform: none; opacity: 1; } }
 .d-drawer > header { display: flex; justify-content: space-between; align-items: flex-start; padding: 16px 16px 12px 20px; border-bottom: 1px solid var(--line); gap: 8px; }
 .d-drawer h3 { font-size: 19px; font-weight: 700; }
@@ -157,7 +157,7 @@
 .d-steps li.now .d-steps__dot { border-color: var(--amber); background: var(--amber); color: var(--ink); box-shadow: 0 0 0 4px rgba(227,154,11,.2); }
 
 /* Modal (preso ao quadro, não à janela) */
-.d-overlay { position: absolute; inset: 0; z-index: 20; background: rgba(20,18,15,.5); display: grid; place-items: center; padding: 16px; animation: d-fade .18s ease both; }
+.d-overlay { position: absolute; inset: 0; z-index: 40; background: rgba(20,18,15,.5); display: grid; place-items: center; padding: 16px; animation: d-fade .18s ease both; }
 @keyframes d-fade { from { opacity: 0; } to { opacity: 1; } }
 .d-modal { width: min(460px, 100%); max-height: 100%; background: var(--surface); border-radius: 14px; display: flex; flex-direction: column; box-shadow: 0 30px 60px -20px rgba(0,0,0,.5); animation: d-pop .22s cubic-bezier(.2,.8,.2,1) both; }
 .d-modal--wide { width: min(600px, 100%); }
@@ -209,7 +209,7 @@
 .d-agenda-list { display: none; gap: 12px; }
 
 /* Aviso */
-.d-toast { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); background: var(--ink); color: #fff; padding: 10px 16px; border-radius: 10px; font-size: 13px; z-index: 30; box-shadow: 0 12px 30px -10px rgba(0,0,0,.5); max-width: calc(100% - 32px); animation: d-pop .25s ease both; display: flex; align-items: center; gap: 8px; }
+.d-toast { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); background: var(--ink); color: #fff; padding: 10px 16px; border-radius: 10px; font-size: 13px; z-index: 50; box-shadow: 0 12px 30px -10px rgba(0,0,0,.5); max-width: calc(100% - 32px); animation: d-pop .25s ease both; display: flex; align-items: center; gap: 8px; }
 .d-toast::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--amber); flex: none; }
 
 /* ── Quadro médio ── */
@@ -324,3 +324,18 @@
   .d-side li button.on::before { display: none; }
   .d-toast { bottom: 92px; }
 }
+
+/* Item avulso (modo real): tipo, descrição, valor e botão */
+.d-itens__add--manual { display: grid; grid-template-columns: 110px minmax(0, 1fr) 110px auto; gap: 8px; align-items: center; }
+.d-itens__add--manual input { min-width: 0; }
+@container demo (max-width: 640px) { .d-itens__add--manual { grid-template-columns: 1fr 1fr; } .d-itens__add--manual input:nth-of-type(1) { grid-column: 1 / -1; } .d-itens__add--manual button { grid-column: 1 / -1; } }
+
+/* Passos de início (painel da oficina nova) */
+.d-onb { list-style: none; margin: 0 0 16px; padding: 0; display: grid; gap: 12px; }
+.d-onb li { display: flex; align-items: center; gap: 12px; font-size: 14.5px; color: var(--muted); }
+.d-onb li.now { color: var(--ink); font-weight: 500; }
+.d-onb__n { flex: none; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; border: 1px solid var(--line); font-size: 12px; }
+.d-onb li.now .d-onb__n { background: var(--amber); border-color: var(--amber); color: #14120F; font-weight: 600; }
+
+/* Celular: deixa espaço para a barra flutuante no fim do painel de detalhes */
+@container demo (max-width: 640px) { .d-drawer__body { padding-bottom: 104px; } }

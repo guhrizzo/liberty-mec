@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { Plus, Search, ArrowRight, X, Check, AlertTriangle, CalendarClock, Wrench, Phone, Mail } from 'lucide-react'
 import { PageHead, Plate, StatusBadge, Badge, Empty } from './ui'
 import { actions, useDemo, seletores } from './store'
+import { useSession, sair } from '../app/session'
 import { STATUS, brl, dataCurta, iso, semanas, totalItens, statusOf } from './data'
 
 const hoje = iso(0)
@@ -89,6 +90,70 @@ export function Painel() {
   )
 }
 
+/* ───────────── Painel (dados reais da oficina) ───────────── */
+export function PainelReal() {
+  const s = useDemo()
+  const { usuario } = useSession()
+  const abertas = s.ordens.filter((o) => o.status !== 'entregue')
+  const atrasadas = abertas.filter((o) => o.previsao && o.previsao < hoje)
+  const aguardando = s.orcamentos.filter((o) => o.status === 'enviado')
+  const contagem = STATUS.filter((x) => x.id !== 'entregue').map((x) => ({ ...x, n: s.ordens.filter((o) => o.status === x.id).length }))
+  const totalPatio = contagem.reduce((a, c) => a + c.n, 0) || 1
+  const vazio = s.clientes.length === 0
+  const primeiro = usuario?.nome?.split(' ')[0]
+
+  return (
+    <div className="d-page">
+      <PageHead title="Painel" sub={primeiro ? `Olá, ${primeiro}. Veja como está a oficina hoje.` : 'Visão do dia da oficina'}>
+        <button className="d-btn d-btn--soft" onClick={sair}>Sair</button>
+        <button className="d-btn d-btn--primary" onClick={() => actions.abrirModal({ tipo: 'os' })}><Plus size={16} /> Nova OS</button>
+      </PageHead>
+
+      {s.carregando && <p className="d-muted" role="status">Carregando os dados da oficina…</p>}
+
+      {vazio && !s.carregando && (
+        <section className="d-block">
+          <header><h3>Comece por aqui</h3></header>
+          <ol className="d-onb">
+            <li className="now"><span className="d-onb__n">1</span>Cadastre o primeiro cliente</li>
+            <li><span className="d-onb__n">2</span>Cadastre o veículo dele</li>
+            <li><span className="d-onb__n">3</span>Abra a primeira ordem de serviço</li>
+          </ol>
+          <button className="d-btn d-btn--primary" onClick={() => actions.abrirModal({ tipo: 'cliente' })}><Plus size={16} /> Cadastrar cliente</button>
+        </section>
+      )}
+
+      <dl className="d-kpis">
+        <div><dt>OS no pátio</dt><dd className="mono">{abertas.length}</dd></div>
+        <div><dt>OS atrasadas</dt><dd className="mono">{atrasadas.length}</dd></div>
+        <div><dt>Orçamentos aguardando</dt><dd className="mono">{aguardando.length}</dd></div>
+        <div><dt>Clientes</dt><dd className="mono">{s.clientes.length}</dd></div>
+      </dl>
+
+      <section className="d-block">
+        <header><h3>Pátio agora</h3><button className="d-link" onClick={() => actions.ir('os')}>Ver ordens <ArrowRight size={14} /></button></header>
+        <div className="d-pipe" role="img" aria-label={contagem.map((c) => `${c.label}: ${c.n}`).join(', ')}>
+          {contagem.map((c) => c.n > 0 && <span key={c.id} className={`d-pipe__seg tone-${c.tone}`} style={{ flexGrow: c.n / totalPatio }} />)}
+        </div>
+        <ul className="d-pipe__legend">
+          {contagem.map((c) => <li key={c.id}><i className={`dot tone-${c.tone}`} />{c.label}<b className="mono">{c.n}</b></li>)}
+        </ul>
+      </section>
+
+      <section className="d-block">
+        <header><h3>Atenção</h3></header>
+        <ul className="d-alerts">
+          {atrasadas.map((o) => (
+            <li key={o.id}><AlertTriangle size={16} className="tone-red-t" />
+              <button className="d-link d-link--plain" onClick={() => { actions.ir('os'); actions.abrirOS(o.id) }}>OS {o.numero} passou da previsão ({dataCurta(o.previsao)})</button></li>
+          ))}
+          {atrasadas.length === 0 && <li className="d-muted">Tudo em dia por aqui.</li>}
+        </ul>
+      </section>
+    </div>
+  )
+}
+
 /* ───────────── Clientes ───────────── */
 export function Clientes() {
   const s = useDemo()
@@ -121,7 +186,7 @@ export function Clientes() {
             ))}
           </tbody>
         </table>
-        {lista.length === 0 && <Empty>Nenhum cliente encontrado para “{q}”.</Empty>}
+        {lista.length === 0 && <Empty>{q ? <>Nenhum cliente encontrado para “{q}”.</> : 'Nenhum cliente cadastrado ainda. Use “Novo cliente” para começar.'}</Empty>}
       </div>
 
       {cli && (
@@ -182,7 +247,7 @@ export function Veiculos() {
             })}
           </tbody>
         </table>
-        {lista.length === 0 && <Empty>Nenhum veículo encontrado.</Empty>}
+        {lista.length === 0 && <Empty>Nenhum veículo por aqui ainda. Cadastre um cliente e depois o veículo dele.</Empty>}
       </div>
     </div>
   )
@@ -225,7 +290,7 @@ export function Ordens() {
             })}
           </tbody>
         </table>
-        {lista.length === 0 && <Empty>Nenhuma OS neste filtro.</Empty>}
+        {lista.length === 0 && <Empty>Nenhuma ordem de serviço por aqui ainda.</Empty>}
       </div>
       {os && <OSDrawer os={os} />}
     </div>

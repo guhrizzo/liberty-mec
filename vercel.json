@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    { "source": "/entrar", "destination": "/index.html" },
+    { "source": "/cadastrar", "destination": "/index.html" },
+    { "source": "/app/:path*", "destination": "/index.html" },
+    { "source": "/app", "destination": "/index.html" }
+  ]
+}
