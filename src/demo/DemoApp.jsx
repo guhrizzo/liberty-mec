@@ -1,0 +1,63 @@
+import { LayoutDashboard, Users, CarFront, ClipboardList, FileText, CalendarDays, Wallet, RotateCcw, Moon, Sun } from 'lucide-react'
+import { useDemo, actions } from './store'
+import { Modais } from './modals'
+import { Painel, Clientes, Veiculos, Ordens, Orcamentos, Agenda, Financeiro } from './views'
+import { Logo } from '../landing/Logo'
+import './demo.css'
+
+export const ROTAS = [
+  { id: 'painel', label: 'Painel', Icon: LayoutDashboard, View: Painel },
+  { id: 'os', label: 'Ordens', Icon: ClipboardList, View: Ordens },
+  { id: 'orcamentos', label: 'Orçamentos', Icon: FileText, View: Orcamentos },
+  { id: 'agenda', label: 'Agenda', Icon: CalendarDays, View: Agenda },
+  { id: 'clientes', label: 'Clientes', Icon: Users, View: Clientes },
+  { id: 'veiculos', label: 'Veículos', Icon: CarFront, View: Veiculos },
+  { id: 'financeiro', label: 'Financeiro', Icon: Wallet, View: Financeiro },
+]
+
+/** Botão de alternar tema claro/escuro da demonstração (usado no quadro, na tela cheia e no menu). */
+export function ThemeToggle({ className = '', label = true }) {
+  const { tema } = useDemo()
+  const escuro = tema === 'escuro'
+  return (
+    <button className={`theme-toggle ${className}`} onClick={actions.alternarTema} aria-pressed={escuro}
+      aria-label={escuro ? 'Mudar a demonstração para o modo claro' : 'Mudar a demonstração para o modo escuro'}>
+      {escuro ? <Sun size={14} /> : <Moon size={14} />}{label && <span>{escuro ? 'Modo claro' : 'Modo escuro'}</span>}
+    </button>
+  )
+}
+
+// O app inteiro é um container (container-type) para reagir à largura do quadro, não da janela.
+export default function DemoApp({ fullscreen = false }) {
+  const s = useDemo()
+  const atual = ROTAS.find((r) => r.id === s.rota) ?? ROTAS[0]
+  const View = atual.View
+  return (
+    <div className={`demo ${fullscreen ? 'demo--full' : ''}`} data-theme={s.tema === 'escuro' ? 'dark' : 'light'}>
+      <div className="demo__app">
+        <nav className="d-side" aria-label="Seções do sistema">
+          <div className="d-side__brand"><Logo light compact /></div>
+          <ul>
+            {ROTAS.map(({ id, label, Icon }) => (
+              <li key={id}>
+                <button className={s.rota === id ? 'on' : ''} aria-current={s.rota === id ? 'page' : undefined} onClick={() => actions.ir(id)}>
+                  <Icon size={18} strokeWidth={1.8} /><span>{label}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+          <div className="d-side__foot">
+            <div className="d-side__shop"><b>Auto Center Ribeiro</b><small>Plano Completo · demonstração</small></div>
+            <ThemeToggle className="d-side__theme" />
+            <button className="d-side__reset" onClick={actions.restaurar} title="Restaurar dados de exemplo"><RotateCcw size={14} /><span>Restaurar dados</span></button>
+          </div>
+        </nav>
+        <main className="d-main" id="demo-main" tabIndex={-1} key={s.rota}>
+          <View />
+        </main>
+        <Modais />
+        {s.toast && <div className="d-toast" role="status">{s.toast}</div>}
+      </div>
+    </div>
+  )
+}
