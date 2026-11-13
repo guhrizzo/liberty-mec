@@ -41,7 +41,7 @@ export default function DemoApp({ fullscreen = false, onClose }) {
           <ul>
             {ROTAS.map(({ id, label, Icon }) => (
               <li key={id}>
-                <button className={s.rota === id ? 'on' : ''} aria-current={s.rota === id ? 'page' : undefined} onClick={() => actions.ir(id)}>
+                <button className={s.rota === id ? 'on' : ''} aria-label={label} aria-current={s.rota === id ? 'page' : undefined} onClick={() => actions.ir(id)}>
                   <Icon size={18} strokeWidth={1.8} /><span>{label}</span>
                 </button>
               </li>

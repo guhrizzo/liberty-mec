@@ -57,6 +57,11 @@ export function Hero({ onFull, fullOpen }) {
             <a href="#demo" className="btn btn--white" onClick={(e) => { e.preventDefault(); goTo('demo') }}>Testar a demonstração</a>
             <a href="#planos" className="btn btn--ghost" onClick={(e) => { e.preventDefault(); goTo('planos') }}>Ver planos</a>
           </div>
+          <ul className="hero__proof" data-hero-fade>
+            <li><b>7 dias</b><span>grátis, sem cartão</span></li>
+            <li><b>R$ 70</b><span>por mês, a partir de</span></li>
+            <li><b>Sem</b><span>fidelidade</span></li>
+          </ul>
         </div>
       </div>
 

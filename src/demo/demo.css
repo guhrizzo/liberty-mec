@@ -300,3 +300,27 @@
 .d-side__theme { justify-content: flex-start; padding: 7px 10px; font-size: 12px; background: none; color: #A89F8E; gap: 8px; }
 .d-side__theme svg { width: 14px; height: 14px; }
 @container demo (max-width: 880px) { .d-side__theme { justify-content: center; } .d-side__theme span { display: none; } }
+
+/* Celular: barra inferior flutuante, item ativo em pílula com o nome (os demais só com ícone) */
+@container demo (max-width: 640px) {
+  .demo__app { grid-template-rows: minmax(0, 1fr); }
+  .d-main { padding-bottom: 96px; }
+  .d-side {
+    position: absolute; z-index: 25; left: 12px; right: 12px; bottom: 12px; grid-row: auto;
+    padding: 6px; border: 1px solid rgba(255,255,255,.08); border-radius: 22px;
+    box-shadow: 0 14px 34px rgba(0,0,0,.38), 0 2px 6px rgba(0,0,0,.25);
+  }
+  .d-side ul { gap: 2px; align-items: center; }
+  .d-side li { flex: 1 1 0; transition: flex-grow .4s var(--ease); }
+  .d-side li:has(> button.on) { flex-grow: 3.1; }
+  .d-side li button {
+    flex-direction: row; justify-content: center; gap: 7px; height: 44px; padding: 0; border-radius: 16px; font-size: 13px;
+    transition: background .35s var(--ease), color .35s var(--ease);
+  }
+  .d-side li button:not(.on) span { display: none; }
+  .d-side li button.on { background: rgba(227, 154, 11, .18); color: #F1B948; font-weight: 600; }
+  .d-side li button.on svg { color: var(--amber); }
+  .d-side li button.on span { display: block; font-size: 12.5px; letter-spacing: -0.01em; white-space: nowrap; }
+  .d-side li button.on::before { display: none; }
+  .d-toast { bottom: 92px; }
+}
