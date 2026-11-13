@@ -58,7 +58,7 @@ export default function App() {
       {full && createPortal(
         <div className="fullscreen" role="dialog" aria-modal="true" aria-label="Demonstração em tela cheia">
           <div className="fullscreen__tools"><ThemeToggle className="frame__theme" /><button className="fullscreen__close" onClick={close} autoFocus><X size={16} /> Sair da tela cheia</button></div>
-          <DemoApp fullscreen />
+          <DemoApp fullscreen onClose={close} />
         </div>, document.body)}
     </>
   )

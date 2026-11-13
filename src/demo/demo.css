@@ -21,6 +21,10 @@
 .d-side__shop small { color: #A89F8E; font-size: 11px; }
 .d-side__reset { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border: 0; background: none; color: #A89F8E; font-size: 12px; border-radius: 6px; cursor: pointer; }
 .d-side__reset:hover { color: #fff; background: rgba(255,255,255,.07); }
+.d-side__clear { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border: 0; background: none; color: #E8B4AC; font-size: 12px; border-radius: 6px; cursor: pointer; transition: background .3s, color .3s; }
+.d-side__clear:hover { color: #fff; background: rgba(224,88,74,.28); }
+.d-side__exit { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 9px 10px; border: 0; border-radius: 8px; background: #E39A0B; color: #14120F; font: 600 13px var(--font-body); cursor: pointer; transition: background .3s; }
+.d-side__exit:hover { background: #f0a620; }
 
 /* Conteúdo — rolagem independente da página */
 .d-main { overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: var(--line) transparent; min-height: 0; outline: none; animation: d-in .28s ease both; }
@@ -211,11 +215,11 @@
 /* ── Quadro médio ── */
 @container demo (max-width: 880px) {
   .demo__app { grid-template-columns: 64px minmax(0, 1fr); }
-  .d-side li button span, .d-side__shop, .d-side__reset span { display: none; }
+  .d-side li button span, .d-side__shop, .d-side__reset span, .d-side__clear span, .d-side__exit span { display: none; }
   .d-side li button { justify-content: center; padding: 11px 0; }
   .d-side li button.on::before { left: -10px; }
   .d-side__brand { padding: 4px 0 10px; display: grid; place-items: center; }
-  .d-side__reset { justify-content: center; }
+  .d-side__reset, .d-side__clear, .d-side__exit { justify-content: center; }
   .d-cols { grid-template-columns: 1fr; }
 }
 /* ── Quadro estreito (celular): navegação vira barra inferior ── */

@@ -1,4 +1,4 @@
-import { LayoutDashboard, Users, CarFront, ClipboardList, FileText, CalendarDays, Wallet, RotateCcw, Moon, Sun } from 'lucide-react'
+import { LayoutDashboard, Users, CarFront, ClipboardList, FileText, CalendarDays, Wallet, RotateCcw, Moon, Sun, Trash2, ArrowLeft } from 'lucide-react'
 import { useDemo, actions } from './store'
 import { Modais } from './modals'
 import { Painel, Clientes, Veiculos, Ordens, Orcamentos, Agenda, Financeiro } from './views'
@@ -28,10 +28,11 @@ export function ThemeToggle({ className = '', label = true }) {
 }
 
 // O app inteiro é um container (container-type) para reagir à largura do quadro, não da janela.
-export default function DemoApp({ fullscreen = false }) {
+export default function DemoApp({ fullscreen = false, onClose }) {
   const s = useDemo()
   const atual = ROTAS.find((r) => r.id === s.rota) ?? ROTAS[0]
   const View = atual.View
+  const limpar = () => { if (window.confirm('Apagar todos os dados de exemplo para cadastrar os seus?')) actions.limpar() }
   return (
     <div className={`demo ${fullscreen ? 'demo--full' : ''}`} data-theme={s.tema === 'escuro' ? 'dark' : 'light'}>
       <div className="demo__app">
@@ -47,8 +48,10 @@ export default function DemoApp({ fullscreen = false }) {
             ))}
           </ul>
           <div className="d-side__foot">
+            {fullscreen && onClose && <button className="d-side__exit" onClick={onClose}><ArrowLeft size={15} /><span>Voltar para a página</span></button>}
             <div className="d-side__shop"><b>Auto Center Ribeiro</b><small>Plano Completo · demonstração</small></div>
             <ThemeToggle className="d-side__theme" />
+            <button className="d-side__clear" onClick={limpar} title="Apagar os dados de exemplo para cadastrar os seus"><Trash2 size={14} /><span>Limpar dados</span></button>
             <button className="d-side__reset" onClick={actions.restaurar} title="Restaurar dados de exemplo"><RotateCcw size={14} /><span>Restaurar dados</span></button>
           </div>
         </nav>
